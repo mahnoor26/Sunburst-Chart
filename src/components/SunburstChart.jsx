@@ -9,15 +9,12 @@ const SunburstChart = ({ data }) => {
     const height = width;
     const radius = width / 6;
 
-    // Remove any existing SVG
     d3.select(chartRef.current).selectAll("*").remove();
 
-    // Create color scale
     const color = d3.scaleOrdinal(
       d3.quantize(d3.interpolateRainbow, data.children.length + 1)
     );
 
-    // Compute hierarchy and layout
     const hierarchy = d3
       .hierarchy(data)
       .sum((d) => d.value)
@@ -29,7 +26,6 @@ const SunburstChart = ({ data }) => {
 
     root.each((d) => (d.current = d));
 
-    // Create arc generator
     const arc = d3
       .arc()
       .startAngle((d) => d.x0)
@@ -39,16 +35,14 @@ const SunburstChart = ({ data }) => {
       .innerRadius((d) => d.y0 * radius)
       .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 1));
 
-    // Create SVG
     const svg = d3
       .select(chartRef.current)
       .append("svg")
       .attr("viewBox", [-width / 2, -height / 2, width, width])
       .style("font", "10px sans-serif")
-      .style("padding", "100px")
+      .style("padding", "90px")
       .style("overflow", "visible");
 
-    // Append arcs
     const path = svg
       .append("g")
       .selectAll("path")
@@ -66,12 +60,10 @@ const SunburstChart = ({ data }) => {
       .style("cursor", (d) => (d.children ? "pointer" : "default"))
       .on("click", (event, p) => clicked(event, p));
 
-    // Add tooltips
     path
       .append("title")
       .text((d) => `${d.data.name}: ${d3.format(",d")(d.value)}`);
 
-    // Add labels
     const label = svg
       .append("g")
       .attr("pointer-events", "none")
@@ -86,7 +78,6 @@ const SunburstChart = ({ data }) => {
       .text((d) => d.data.name)
       .style("font-size", "20px");
 
-    // Add parent circle
     const parent = svg
       .append("circle")
       .datum(root)
@@ -95,7 +86,6 @@ const SunburstChart = ({ data }) => {
       .attr("pointer-events", "all")
       .on("click", (event, p) => clicked(event, p));
 
-    // Zoom behavior
     function clicked(event, p) {
       parent.datum(p.parent || root);
 

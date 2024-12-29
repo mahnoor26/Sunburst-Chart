@@ -16,8 +16,7 @@ function App() {
         <h1>Sunburst Chart</h1>
         <div
           style={{
-            width: 950,
-            marginTop: 100,
+            width: 650,
           }}
         >
           <SunburstChart data={data} />
